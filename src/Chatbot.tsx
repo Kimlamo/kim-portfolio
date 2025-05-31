@@ -95,7 +95,7 @@ export default function Chatbot() {
     },
   ]);
 
-  function addBotMessage(text, opts = []) {
+  function addBotMessage(text: string, opts: any[] = []) {
     setMessages((prev) => [...prev, { text, fromBot: true }]);
     setOptions(opts);
   }
