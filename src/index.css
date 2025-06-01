@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Limit Chatbase popup width */
+iframe[src*="chatbase.co"] {
+  max-width: 360px !important;
+  width: 100% !important;
+  right: 1.5rem !important;
+  bottom: 1.5rem !important;
+  border-radius: 12px !important;
+}
