@@ -1,7 +1,6 @@
 import MyProcess from "./MyProcess";
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import Chatbot from "./Chatbot";
 type Project = {
   Title: string;
   "Tool Used": string;
@@ -247,7 +246,7 @@ function App() {
         <p>Thanks for stopping by. Let’s build something beautiful together!</p>
       </footer>
 
-      <Chatbot />
+
     </div>
   );
 }
