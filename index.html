@@ -10,7 +10,7 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- ✅ Only ONE chatbot script -->
+    <!-- ✅ Chatbase embed with reset on load -->
     <script>
       (function(){
         if(!window.chatbase || window.chatbase("getState")!=="initialized"){
@@ -25,15 +25,21 @@
             }
           })
         }
+
         const onLoad=function(){
           const script=document.createElement("script");
           script.src="https://www.chatbase.co/embed.min.js";
           script.id="AYWSw677H6y3O5246u3f9";
           script.domain="www.chatbase.co";
-          document.body.appendChild(script)
+          script.onload = () => {
+            // 💡 This ensures the chat resets every time
+            window.chatbase('reset');
+          };
+          document.body.appendChild(script);
         };
+
         if(document.readyState==="complete"){onLoad()}
-        else{window.addEventListener("load",onLoad)}
+        else{window.addEventListener("load", onLoad)}
       })();
     </script>
   </body>
