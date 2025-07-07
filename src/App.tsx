@@ -1,6 +1,7 @@
 import MyProcess from "./MyProcess";
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
+
 type Project = {
   Title: string;
   "Tool Used": string;
@@ -32,12 +33,15 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
+  // ✅ Fixed SheetDB fetch logic
   useEffect(() => {
-    fetch(
-      "https://api.sheetbest.com/sheets/4023bb4f-0322-414a-9d05-d9ce5b474b7b"
-    )
+    fetch("https://sheetdb.io/api/v1/cuij7d6k1u6s6")
       .then((res) => res.json())
-      .then((data) => setProjects(data));
+      .then((data) => {
+        console.log("Fetched data:", data);
+        setProjects(data.data); // ✅ Fix: correctly set the projects array
+      })
+      .catch((err) => console.error("Fetch error:", err));
   }, []);
 
   useEffect(() => {
@@ -62,7 +66,7 @@ function App() {
 
   return (
     <div className="min-h-screen scroll-smooth bg-white dark:bg-gray-900 text-black dark:text-white transition-colors duration-300 ease-in-out relative">
-      {/* Sticky Navbar */}
+      {/* Navbar */}
       <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-md">
         <nav className="flex justify-center space-x-6 py-4">
           <a href="#about" className="text-sm font-medium hover:text-green-500">
@@ -89,7 +93,7 @@ function App() {
         </nav>
       </header>
 
-      {/* Animated Intro Section */}
+      {/* Hero */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -115,23 +119,13 @@ function App() {
         </motion.p>
       </motion.section>
 
-      {/* About Me Section */}
+      {/* About */}
       <section id="about" className="py-12 px-4 max-w-4xl mx-auto">
         <AnimatedHeading text="About Me" />
         <p className="text-base leading-relaxed text-gray-700 dark:text-gray-300 mb-6">
           Hi, I’m Kim Lamothe, a curious, matcha-over-coffee kind of
           Instructional Designer who believes learning should be clear,
-          inclusive, and just a little bit fun. I specialize in transforming
-          complex information into engaging, accessible learning experiences
-          that help people do their jobs better, and feel more confident doing
-          them. With over a decade of experience, I have worked with government
-          agencies, corporate teams, and mission-driven organizations to create
-          eLearning, instructor-led training, and blended learning solutions. I
-          love collaborating with subject matter experts, solving design
-          challenges, and finding creative ways to make information stick.
-          Whether you are here to explore project ideas, get to know my style,
-          or find the right partner for your next learning solution, I’m glad
-          you’re here!
+          inclusive, and just a little bit fun...
         </p>
         <p className="text-base leading-relaxed text-gray-700 dark:text-gray-300">
           I use tools like Articulate, Storyline, and Vyond. But what really
@@ -140,63 +134,60 @@ function App() {
         <MyProcess />
       </section>
 
-      {/* Projects Section */}
+      {/* Projects */}
       <section id="projects" className="py-12 px-4 max-w-6xl mx-auto">
         <AnimatedHeading text="Projects" />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project, index) => (
-            <motion.div
-              key={index}
-              className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl"
-              whileHover={{ scale: 1.03 }}
-            >
-              <img
-                src={project["Image URL"]}
-                alt={`Thumbnail for ${project.Title}`}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <motion.h3
-                  className="text-xl font-semibold mb-3"
-                  whileHover={{ color: "#22c55e", scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  {project.Title}
-                </motion.h3>
-
-                <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 leading-snug whitespace-pre-line">
-                  <span className="font-semibold">Description:</span>
-                  <br />
-                  {project.Description}
-                </p>
-
-                <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-                  <span className="font-semibold">Tools Used:</span>{" "}
-                  {project["Tool Used"]}
-                </p>
-
-                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                  <span className="font-semibold">My Role:</span> Instructional
-                  Designer
-                </p>
-
-                <motion.a
-                  href={project.Link}
-                  className="inline-block bg-green-500 text-white text-sm px-4 py-2 rounded hover:bg-green-600 transition"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 250 }}
-                >
-                  View Project
-                </motion.a>
-              </div>
-            </motion.div>
-          ))}
+          {Array.isArray(projects) &&
+            projects.map((project, index) => (
+              <motion.div
+                key={index}
+                className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl"
+                whileHover={{ scale: 1.03 }}
+              >
+                <img
+                  src={project["Image URL"]}
+                  alt={`Thumbnail for ${project.Title}`}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <motion.h3
+                    className="text-xl font-semibold mb-3"
+                    whileHover={{ color: "#22c55e", scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    {project.Title}
+                  </motion.h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 leading-snug whitespace-pre-line">
+                    <span className="font-semibold">Description:</span>
+                    <br />
+                    {project.Description}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                    <span className="font-semibold">Tools Used:</span>{" "}
+                    {project["Tool Used"]}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                    <span className="font-semibold">My Role:</span>{" "}
+                    Instructional Designer
+                  </p>
+                  <motion.a
+                    href={project.Link}
+                    className="inline-block bg-green-500 text-white text-sm px-4 py-2 rounded hover:bg-green-600 transition"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 250 }}
+                  >
+                    View Project
+                  </motion.a>
+                </div>
+              </motion.div>
+            ))}
         </div>
       </section>
 
-      {/* Contact Section */}
+      {/* Contact */}
       <section
         id="contact"
         className="py-12 px-4 text-center max-w-3xl mx-auto"
@@ -245,8 +236,6 @@ function App() {
       <footer className="text-center py-6 mt-10 text-sm text-gray-500 dark:text-gray-400">
         <p>Thanks for stopping by. Let’s build something beautiful together!</p>
       </footer>
-
-
     </div>
   );
 }
